@@ -11,7 +11,7 @@
 │                        交互层 (多通道)                              │
 │                                                                    │
 │   🎤 语音输入          📱 App/Web            💻 CLI (Hermes)        │
-│   麦克风 → STT          Telegram / PWA         终端交互             │
+│   麦克风 → STT          飞书 Bot               终端交互             │
 │       │                    │                      │                │
 │       └────────────────────┼──────────────────────┘                │
 │                            ▼                                       │
@@ -59,8 +59,8 @@
 
 | 方案 | 适用场景 |
 |---|---|
-| Telegram Bot | Phase 1 首选 — 零开发，多端推送，Hermes 原生支持 |
-| PWA | 后期 — 把 Telegram/web 包成独立 App |
+| 飞书 | Phase 1 首选 — 国内无障碍，Hermes 原生支持 |
+| PWA | 后期 — 把 Web 包成独立 App |
 | HA Lovelace | 可选 — 在智能家居面板嵌入对话 |
 
 ### 2.3 CLI

@@ -14,12 +14,12 @@
 | 机器人 | Telos (ROS2 + STM32) |
 | 智能家居 | Home Assistant |
 | 语音 | VAD (本地) + STT (云端) + TTS |
-| 交互 | Telegram / CLI / 语音 / Web |
+| 交互 | 飞书 / CLI / 语音 / Web |
 | 网络 | Tailscale |
 
 ## 路线图
 
-- [ ] Phase 1: Telegram 通道打通
+- [ ] Phase 1: 飞书通道打通
 - [ ] Phase 2: 贾维斯人格 + 长期记忆升级
 - [ ] Phase 3: 语音通道 (STT + TTS)
 - [ ] Phase 4: HA 深度整合 (主动感知)
