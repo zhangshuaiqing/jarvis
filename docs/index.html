@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis — Personal AI Companion</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --card: #13161d;
+    --border: #1e2430;
+    --accent: #4dabf7;
+    --accent-glow: rgba(77, 171, 247, 0.15);
+    --text: #c8cdd5;
+    --dim: #6b7280;
+    --bright: #e5e7eb;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 50% 0%, var(--accent-glow) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 700;
+    color: var(--bright);
+    letter-spacing: -0.03em;
+    position: relative;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--accent), #74c0fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero .subtitle {
+    margin-top: 16px;
+    font-size: 20px;
+    color: var(--dim);
+    font-weight: 300;
+  }
+
+  .pulse {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+    vertical-align: middle;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; box-shadow: 0 0 0 0 var(--accent-glow); }
+    50% { opacity: 1; box-shadow: 0 0 0 12px transparent; }
+  }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+  section { padding: 80px 0; }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--bright);
+    margin-bottom: 8px;
+  }
+
+  .grid { display: grid; gap: 24px; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: var(--accent); }
+
+  .card .icon { font-size: 32px; margin-bottom: 12px; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--accent-glow);
+    color: var(--accent);
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .arch-layer {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+
+  .arch-layer.top { border-color: var(--accent); }
+  .arch-layer.top h3 { color: var(--accent); }
+
+  .arch-arrow {
+    text-align: center;
+    font-size: 24px;
+    color: var(--dim);
+    margin: 8px 0;
+  }
+
+  .arch-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .arch-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .phase {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .phase:last-child { border-bottom: none; }
+
+  .phase-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--accent-glow);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .phase-num.done { background: var(--accent); color: #0a0c10; }
+
+  .phase-body { flex: 1; }
+
+  .phase-body h3 { margin-bottom: 4px; }
+
+  .phase-body p { color: var(--dim); font-size: 15px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+
+  th { color: var(--dim); font-weight: 500; }
+  td { color: var(--text); }
+
+  .footer {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--dim);
+    font-size: 14px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  .footer a { color: var(--accent); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  .status-bar {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: var(--dim);
+    z-index: 10;
+  }
+
+  .status-bar .pulse { width: 8px; height: 8px; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1><span>Jarvis</span></h1>
+  <p class="subtitle">Personal AI Companion &middot; 带人格、有记忆、能主动服务的个人 AI 助手</p>
+  <p style="margin-top: 24px; color: var(--dim);">
+    <span class="pulse"></span> Phase 0 — 设计阶段
+  </p>
+</div>
+
+<div class="container">
+
+  <!-- 愿景 -->
+  <section>
+    <h2>愿景</h2>
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="icon">🗣</div>
+        <h3>多通道交互</h3>
+        <p style="color: var(--dim); font-size: 15px;">语音唤醒 + CLI + Telegram，随时随地对话，不再局限于终端。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3>主动服务</h3>
+        <p style="color: var(--dim); font-size: 15px;">定时播报 + 事件感知，不等你问，主动告诉你该知道的事。</p>
+      </div>
+      <div class="card">
+        <div class="icon">🤖</div>
+        <h3>统一大脑</h3>
+        <p style="color: var(--dim); font-size: 15px;">机器人 Telos + 智能家居 HA，一个 Agent 控制一切。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 架构 -->
+  <section>
+    <h2>架构</h2>
+    <div class="arch-layer top">
+      <h3>🧬 贾维斯核心 &mdash; Hermes Agent</h3>
+      <p style="color: var(--dim); font-size: 14px; margin-top: 4px;">LLM: DeepSeek / Kimi（云端）</p>
+      <div class="arch-row">
+        <div class="arch-chip">🎭 人格模块</div>
+        <div class="arch-chip">📡 主动引擎</div>
+        <div class="arch-chip">🧠 记忆系统</div>
+        <div class="arch-chip">🔧 技能调度</div>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer">
+      <h3>🔌 交互层</h3>
+      <div class="arch-row">
+        <div class="arch-chip">🎤 语音 (VAD → STT)</div>
+        <div class="arch-chip">📱 Telegram</div>
+        <div class="arch-chip">💻 CLI (Hermes)</div>
+        <div class="arch-chip">🔊 TTS → 音箱</div>
+      </div>
+    </div>
+    <div class="arch-arrow">↕</div>
+    <div class="arch-layer">
+      <h3>🔧 执行层</h3>
+      <div class="arch-row">
+        <div class="arch-chip">🤖 机器人 (Telos + ROS2 + STM32)</div>
+        <div class="arch-chip">🏠 智能家居 (Home Assistant)</div>
+        <div class="arch-chip">🌐 外部服务 (天气/日历/邮件)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 技术栈 -->
+  <section>
+    <h2>技术栈</h2>
+    <table>
+      <tr><th>层</th><th>技术选型</th><th>说明</th></tr>
+      <tr><td>大脑</td><td>Hermes Agent + DeepSeek/Kimi</td><td>云端 LLM，无需 GPU</td></tr>
+      <tr><td>机器人</td><td>Telos (ROS2 Humble + STM32F407)</td><td>7 原语执行器</td></tr>
+      <tr><td>智能家居</td><td>Home Assistant + Tailscale</td><td>已部署，网段打通</td></tr>
+      <tr><td>语音</td><td>webrtcvad + Whisper API + edge-tts</td><td>本地 VAD，云端 STT/TTS</td></tr>
+      <tr><td>交互</td><td>Telegram Bot / CLI / 语音</td><td>三通道并行</td></tr>
+      <tr><td>记忆</td><td>Hermes memory + Chroma 向量库</td><td>短期 + 长期语义检索</td></tr>
+      <tr><td>组网</td><td>Tailscale</td><td>零暴露公网端口</td></tr>
+    </table>
+  </section>
+
+  <!-- 路线图 -->
+  <section>
+    <h2>路线图</h2>
+    <div class="phase">
+      <div class="phase-num done">1</div>
+      <div class="phase-body">
+        <h3>Phase 1 — Telegram 通道 <span class="tag">下一步</span></h3>
+        <p>打通 Hermes ↔ Telegram，手机端随时对话贾维斯。</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">2</div>
+      <div class="phase-body">
+        <h3>Phase 2 — 人格 + 记忆升级</h3>
+        <p>定义贾维斯人格，引入 Chroma 向量检索实现长期语义记忆。</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">3</div>
+      <div class="phase-body">
+        <h3>Phase 3 — 语音通道</h3>
+        <p>本地方案：唤醒词 + VAD → 云端 STT → Hermes → TTS 播报。</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">4</div>
+      <div class="phase-body">
+        <h3>Phase 4 — HA 深度整合</h3>
+        <p>主动感知回家/离家/异常事件，贾维斯自主推送。</p>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-num">5</div>
+      <div class="phase-body">
+        <h3>Phase 5 — 机器人控制</h3>
+        <p>Telos ROS2 节点就绪后，贾维斯统一调度机器人行为。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 相关项目 -->
+  <section>
+    <h2>相关项目</h2>
+    <div class="grid grid-2">
+      <a href="https://github.com/zhangshuaiqing/Telos" style="text-decoration: none;">
+        <div class="card">
+          <h3>Telos 🤖</h3>
+          <p style="color: var(--dim); font-size: 15px;">API-first 机器人 Agent — 感知 → LLM → 7 原语 → STM32 实时控制。</p>
+        </div>
+      </a>
+      <div class="card">
+        <h3>Home Assistant 🏠</h3>
+        <p style="color: var(--dim); font-size: 15px;">已部署 HA Docker，Tailscale 组网，CareLink 血糖监测接入。</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<div class="status-bar">
+  <span class="pulse"></span> Jarvis · v0.1.0-dev
+</div>
+
+<div class="footer">
+  Built with ❤️ by <a href="https://github.com/zhangshuaiqing">zhangshuaiqing</a> · Powered by <a href="https://hermes-agent.nousresearch.com">Hermes Agent</a>
+</div>
+
+</body>
+</html>
